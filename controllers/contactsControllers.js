@@ -1,8 +1,4 @@
 import * as contactsService from "../services/contactsServices.js";
-import {
-    createContactSchema,
-    updateContactSchema,
-} from "../schemas/contactsSchemas.js";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
@@ -18,7 +14,7 @@ export const getOneContact = async(req, res) => {
     const { id } = req.params;
     const result = await contactsService.getContactById(id);
     if (!result) {
-        throw HttpError(404, `Not found`);
+        throw HttpError(404);
     }
 
     res.json(result);
@@ -37,7 +33,7 @@ const updateContact = async (req, res) => {
     const {id} = req.params;
     const result = await contactsService.updateContactById(id, req.body);
     if (!result) {
-        throw HttpError(404, `Not found`);
+        throw HttpError(404);
     }
 
     res.json(result);
@@ -49,7 +45,7 @@ const deleteContact = async(req, res) => {
     const {id} = req.params;
     const result = await contactsService.removeContact(id);
     if (!result) {
-        throw HttpError(404, `Not found`);
+        throw HttpError(404);
     }
 
     res.json(result)
@@ -61,7 +57,7 @@ const updateContactStatus = async(req, res) => {
     if (!req.body.hasOwnProperty("favorite")) {
         throw HttpError(400);
     }
-    
+
     const { id } = req.params;
     const { favorite } = req.body;
     const result = await contactsService.updateStatusContact(id, { favorite });
