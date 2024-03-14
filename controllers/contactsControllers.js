@@ -52,12 +52,6 @@ const deleteContact = async(req, res) => {
 }
 
 const updateContactStatus = async(req, res) => {
-    
-
-    if (!req.body.hasOwnProperty("favorite")) {
-        throw HttpError(400);
-    }
-
     const { id } = req.params;
     const { favorite } = req.body;
     const result = await contactsService.updateStatusContact(id, { favorite });
