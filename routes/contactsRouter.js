@@ -1,6 +1,9 @@
 import express from "express";
 import contactsControllers from "../controllers/contactsControllers.js";
+
 import isValidId from "../middlewares/isValidId.js";
+import authenticate from "../middlewares/authenticate.js";
+
 import validateBody from "../helpers/validateBody.js";
 import {
   createContactSchema,
@@ -8,7 +11,10 @@ import {
   updateFavoriteSchema,
 } from "../schemas/contactsSchemas.js";
 
+
 const contactsRouter = express.Router();
+
+contactsRouter.use(authenticate);
 
 contactsRouter.get("/", contactsControllers.getAllContacts);
 
