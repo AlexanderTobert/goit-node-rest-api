@@ -1,9 +1,14 @@
+import fs from "fs/promises";
+import path from "path";
 import * as authServices from "../services/authServices.js";
 
 
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import jwt from "jsonwebtoken";
+import gravatar from "gravatar";
+
+const avatarsPath = path.resolve("public", "avatars");
 
 const { JWT_SECRET } = process.env;
 
@@ -13,12 +18,17 @@ const signup = async (req, res) => {
     if (user) {
         throw HttpError(409, "Email in use");
     }
-    const newUser = await authServices.signup(req.body);
+    const avatar = gravatar.url(email);
+
+    const newUser = await authServices.signup({ ...req.body, avatarURL: avatar });
+
+    
 
     res.status(201).json({
         user: {
             email: newUser.email,
             subscription: newUser.subscription,
+            avatarURL: avatar,
         }
         
     })
@@ -63,9 +73,21 @@ const logout = async (req, res) => {
     res.status(204);
 }
 
+// const updateUserAvatar = async (req, res) => {
+//     const { _id } = req.user;
+//     const {path: oldPath, filename} = req.file;
+//     const newPath = path.join(avatarsPath, filename);
+//     await fs.rename(oldPath, newPath);
+//     const avatar = path.join("avatars", filename);
+//     const result = await authServices.updateUserAvatar({ _id }, {avatarURL: avatar});
+
+//     res.status(200).json(result);
+// }
+
 export default {
     signup: ctrlWrapper(signup),
     signin: ctrlWrapper(signin),
     getCurrent: ctrlWrapper(getCurrent),
     logout: ctrlWrapper(logout),
+    // updateUserAvatar: ctrlWrapper(updateUserAvatar),
 }
